@@ -32,17 +32,19 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
 
         httpSecurity.csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll()
-        .anyRequest()
-        .authenticated()
-    )
-    .sessionManagement(session -> session
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    )
-    .authenticationProvider(authenticationProvider)
-    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/auth/**").permitAll()
+            .requestMatchers("/uploads/**").permitAll()
+            .anyRequest()
+            .authenticated()
+        )
+        .sessionManagement(session -> session
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        )
+        .authenticationProvider(authenticationProvider)
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-    return httpSecurity.build();
+        return httpSecurity.build();
 
     }
 

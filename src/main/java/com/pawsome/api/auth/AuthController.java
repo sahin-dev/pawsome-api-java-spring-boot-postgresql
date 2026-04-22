@@ -1,8 +1,8 @@
 package com.pawsome.api.auth;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,13 +30,13 @@ public class AuthController {
         this.jwtService =  jwtService;
     }
 
-    @GetMapping(path="signup")
+    @PostMapping(path="signup")
     public ResponseEntity<?> SignUp(@RequestBody @Valid SignupDto signupDto){
   
         return ResponseEntity.status(201).body(authService.Singup(signupDto));
     }
 
-    @GetMapping(path = "login")
+    @PostMapping(path = "login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginUserDto loginUserDto){
         User authenticatedUser = authService.authenticate(loginUserDto);
 

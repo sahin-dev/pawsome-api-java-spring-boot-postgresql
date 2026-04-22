@@ -13,7 +13,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import com.pawsome.api.auth.JwtService;
+import com.pawsome.api.exception.JwtAuthenticationException;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,10 +43,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
             throws ServletException, IOException {
         
                 final String authHeader = request.getHeader("Authorization");
+
+                System.out.println(authHeader);
+
                 if(authHeader == null || !authHeader.startsWith("Bearer")){
                     filterChain.doFilter(request, response);
                     return;
                 }
+
                 try{
                     final String jwtToken = authHeader.substring(7);
                     final String userEmail = jwtService.extractUsername(jwtToken);
@@ -58,12 +64,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                             usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                        } else {
+                            throw new JwtAuthenticationException("Token is not valid");
                         }
+                    } else if(userEmail == null) {
+                        throw new JwtAuthenticationException("Token is not valid or expired");
                     }
 
                     filterChain.doFilter(request, response);
-                }catch(Exception ex){
+                }catch(JwtAuthenticationException ex){
+                    System.out.println(ex.getMessage());
                     handlerExceptionResolver.resolveException(request, response, null, ex);
+                }catch(Exception ex){
+                    System.out.println(ex);
+                    handlerExceptionResolver.resolveException(request, response, null, new JwtAuthenticationException("Authentication failed: " + ex.getMessage(), ex));
                 }
     }
 
