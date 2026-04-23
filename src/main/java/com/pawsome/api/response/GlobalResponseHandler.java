@@ -12,7 +12,9 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-import com.pawsome.api.exception.MyApiException;
+
+import com.pawsome.api.exception.ApiError;
+
 
 
 @RestControllerAdvice
@@ -21,13 +23,10 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object>{
     @Override
     public @Nullable Object beforeBodyWrite(@Nullable Object body, MethodParameter returnType, MediaType selectedContestType,
             Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-                System.out.println(body);
-        // Don't wrap error responses (Map with "errors" or "error" keys)
-        if (body instanceof Map) {
-            Map<?, ?> map = (Map<?, ?>) body;
-            if (map.containsKey("errors") || map.containsKey("error")) {
-                return body; // Return error as-is with original status code
-            }
+                
+
+        if (body instanceof ApiError){
+            return body;
         }
 
         // Don't wrap if already wrapped
@@ -46,8 +45,8 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object>{
         return true;
     }
 
-    @ExceptionHandler(MyApiException.class)
-    public ResponseEntity<ApiResponse<?>> handleApiException(MyApiException ex) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<?>> handleApiException(Exception ex) {
 
         ApiResponse<?> response = new ApiResponse<>(
                 false,

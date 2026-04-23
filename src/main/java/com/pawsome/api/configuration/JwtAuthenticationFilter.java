@@ -13,7 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import com.pawsome.api.auth.JwtService;
-import com.pawsome.api.exception.JwtAuthenticationException;
+import com.pawsome.api.auth.exception.JwtAuthenticationException;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -65,14 +65,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                             usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                         } else {
-                            throw new JwtAuthenticationException("Token is not valid");
+                            throw new com.pawsome.api.auth.exception.JwtAuthenticationException("Token is not valid");
                         }
                     } else if(userEmail == null) {
                         throw new JwtAuthenticationException("Token is not valid or expired");
                     }
 
                     filterChain.doFilter(request, response);
-                }catch(JwtAuthenticationException ex){
+                }catch(com.pawsome.api.auth.exception.JwtAuthenticationException ex){
                     System.out.println(ex.getMessage());
                     handlerExceptionResolver.resolveException(request, response, null, ex);
                 }catch(Exception ex){

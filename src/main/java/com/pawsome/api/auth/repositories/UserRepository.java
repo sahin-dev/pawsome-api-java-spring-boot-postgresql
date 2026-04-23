@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 
 import com.pawsome.api.auth.User;
+import java.util.List;
+
 
 
 
@@ -16,4 +18,5 @@ public interface UserRepository extends CrudRepository<User, String>{
 
     boolean existsByEmail(String email);
     boolean existsByUsername(String username);
+    Optional<User> findById(String id);
 }

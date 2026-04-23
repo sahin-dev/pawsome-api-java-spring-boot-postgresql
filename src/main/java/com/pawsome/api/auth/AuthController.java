@@ -11,6 +11,7 @@ import com.pawsome.api.auth.dtos.LoginResponse;
 
 import com.pawsome.api.auth.dtos.LoginUserDto;
 import com.pawsome.api.auth.dtos.SignupDto;
+import com.pawsome.api.auth.exception.EntityAlreadyExistsException;
 
 import jakarta.validation.Valid;
 
@@ -31,7 +32,7 @@ public class AuthController {
     }
 
     @PostMapping(path="signup")
-    public ResponseEntity<?> SignUp(@RequestBody @Valid SignupDto signupDto){
+    public ResponseEntity<?> SignUp(@RequestBody @Valid SignupDto signupDto) throws EntityAlreadyExistsException{
   
         return ResponseEntity.status(201).body(authService.Singup(signupDto));
     }

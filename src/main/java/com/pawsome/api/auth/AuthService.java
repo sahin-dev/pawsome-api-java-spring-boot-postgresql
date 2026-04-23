@@ -1,6 +1,5 @@
 package com.pawsome.api.auth;
 
-import java.net.Authenticator;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.pawsome.api.auth.dtos.LoginUserDto;
 import com.pawsome.api.auth.dtos.SignupDto;
+import com.pawsome.api.auth.exception.EntityAlreadyExistsException;
 import com.pawsome.api.auth.repositories.UserRepository;
-import com.pawsome.api.exception.EntityAlreadyExistsException;
 
 @Service
 public class AuthService {
@@ -30,7 +29,7 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
     }
 
-    public User Singup(SignupDto signupDto){
+    public User Singup(SignupDto signupDto) throws EntityAlreadyExistsException{
 
         if(userRepository.existsByEmail(signupDto.getEmail())){
             throw new EntityAlreadyExistsException("Email already exists");

@@ -51,6 +51,6 @@ public class CreatePetDto {
             .setAge(createPetDto.getAge())
             .setWeight(createPetDto.getWeight())
             .setMedicalNotes(createPetDto.getMedicalNotes())
-            .setFeedingInstruction(createPetDto.getFeedingInstructions());
+            .setFeedingInstructions(createPetDto.getFeedingInstructions());
     }
 }
