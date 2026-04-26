@@ -1,6 +1,7 @@
 package com.pawsome.api.pet;
 
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -20,6 +21,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -48,6 +50,10 @@ public class Pet {
     @Column(name = "pet_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private PetTypeEnum petType;
+
+    @OneToMany(fetch=FetchType.LAZY)
+    @JsonIgnore
+    private List<PetGallary> petGallaries;
 
     @Column(nullable = false)
     private String breed;

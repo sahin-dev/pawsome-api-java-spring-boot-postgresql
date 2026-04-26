@@ -10,12 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApiError {
-
-
     private boolean success = false;
     private String message;
-    private String url;
-    private int statusCode; 
+    private Map<String, String>  errors; 
 
 
 }

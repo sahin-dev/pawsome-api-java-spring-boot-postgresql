@@ -26,6 +26,7 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object>{
                 
 
         if (body instanceof ApiError){
+            System.err.println(body);
             return body;
         }
 
@@ -43,20 +44,6 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object>{
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
        
         return true;
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<?>> handleApiException(Exception ex) {
-
-        ApiResponse<?> response = new ApiResponse<>(
-                false,
-                null,
-                ex.getMessage()
-        );
-
-        return ResponseEntity
-                .status(400)
-                .body(response);
     }
 
     
