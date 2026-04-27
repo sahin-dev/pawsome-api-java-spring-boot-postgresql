@@ -1,7 +1,13 @@
 package com.pawsome.api.booking;
 
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalUnit;
+
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.pawsome.api.auth.User;
@@ -31,22 +37,39 @@ public class BookingService {
 
     public Booking createBooking(User user, CreateBookingDto createBookingDto) throws Exception{
 
-        PetService petService = this.serviceRepository.findById(createBookingDto.getService()).orElseThrow(() -> new ResourceNotFoundException("Service not found with id "+createBookingDto.getService()));
+        PetService petService = this.serviceRepository.findById(createBookingDto.getService())
+        .orElseThrow(() -> new ResourceNotFoundException("Service not found with id "+createBookingDto.getService()));
+
         if(petService.getStatus() == ServiceStatus.INACTIVE){
             throw new ServiceNotAvailableException("service not avaailable"); 
         }
 
         Pet pet = this.petRepository.findWithGallaries(createBookingDto.getPet()).orElseThrow(() -> new ResourceNotFoundException("Pet not found with id "+createBookingDto.getPet()));
-        
 
+    
         Booking booking =  modelMapper.map(createBookingDto, Booking.class);
+
         booking.setUser(user);
         booking.setService(petService);
         booking.setPet(pet);
-
-        System.out.println(booking);
+        booking.setServiceEndedAt(getServiceEndTime(createBookingDto.getServiceStartedAt(), petService));
+        booking.setCords(createBookingDto.getCords());
 
         return this.bookingRepository.save(booking);
+    }
+
+    public Page<Booking> getAllBookings(Pageable pageable){
+
+        Page<Booking> bookings = this.bookingRepository.findAll(pageable); 
+        
+        return bookings;
+    }
+
+    private LocalDateTime getServiceEndTime(LocalDateTime startTime, PetService petService){
+         Long serviceDuration = (long) (petService.getDuration() * 60);
+        LocalDateTime endTime = startTime.plusMinutes(serviceDuration);
+
+        return endTime;
     }
 
 }

@@ -3,11 +3,10 @@ package com.pawsome.api.booking;
 
 
 import java.time.LocalDateTime;
-
 import com.pawsome.api.auth.User;
+import com.pawsome.api.booking.classes.LocationCords;
 import com.pawsome.api.booking.enums.BookingStatusEnum;
 import com.pawsome.api.pet.Pet;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,12 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
-
-
-
 import com.pawsome.api.service.PetService;
-
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -54,4 +48,17 @@ public class Booking {
 
     @Column(name = "service_started_at", nullable = false)
     private LocalDateTime serviceStartedAt;
+    
+    @Column(name = "service_ended_at", nullable = true)
+    private LocalDateTime serviceEndedAt;
+
+    @Column(nullable = false)
+    private String address;
+
+    @Embedded
+    private LocationCords cords;
+
+    @ManyToOne
+    @JoinColumn(name = "sitter_id", nullable = true)
+    private User  sitter;
 }
